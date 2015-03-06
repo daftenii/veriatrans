@@ -1,0 +1,78 @@
+git remote update
+git branch "ticket-$TICKET" origin/live
+git checkout "ticket-$TICKET"
+git push origin "ticket-$TICKET"
+git branch --set-upstream-to origin/"ticket-$TICKET"
+
+trece pe alt nod 
+git checkout "ticket-$TICKET"
+
+arata nodul curent
+git status
+
+/*****************************
+/*****************************
+/*****************************
+
+create project
+php composer.phar create-project symfony/framework-standard-edition d:/sym/
+
+generate bundle
+php app/console generate:bundle --namespace=Acme/HelloBundle --format=yml
+
+cach clear
+php app/console cach:clear --env=prod --no-debug
+
+doctrine database create
+php app/console doctrine:database:create
+
+doctrine database drop
+php app/console doctrine:database:drop --force
+
+doctrine generate entity
+php app/console doctrine:generate:entity
+
+doctrine generate entity getters and setters
+php app/console doctrine:generate:entities Acme/StoreBundle/Entity/Product --no-backup
+
+doctrine generate all tables
+php app/console doctrine:schema:update --force
+
+All route information
+php app/console route:match "/members/admin"
+
+Update DB
+php app/console doctrine:schema:update --force
+
+Create database
+php app/console doctrine:database:create
+
+Generate entity
+php app/console doctrine:generate:entity
+
+create getters ans setters
+php app/console doctrine:generate:entities Acme/StoreBundle/Entity/Product
+
+create repository class
+php app/console doctrine:generate:entities Acme/StoreBundle/Entity/Product @ORM\Entity(repositoryClass="...")
+
+move images from bundle into web bundles(\Resources\public\images)
+php app/console assets:install
+
+(The doctrine:generate:entities command saves a backup  of the original Product.php named Product.php~ . In some cases, the presence
+of this file can cause a "Cannot redeclare class" error. It can be safely removed. You can also use the --no-backup option to prevent
+generating these backup files.)
+
+Generate all known entities
+php app/console doctrine:generate:entities AcmeStoreBundle
+php app/console doctrine:generate:entities Acme
+
+update all database tables
+php app/console doctrine:schema:update --force
+
+
+git checkout ticket-4757
+git pull origin ticket-4757
+git checkout master
+git pull origin master
+git merge --no-ff ticket-4757

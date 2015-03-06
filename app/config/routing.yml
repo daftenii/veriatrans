@@ -1,0 +1,3 @@
+veriatrans_main:
+    resource: "@VeriatransMainBundle/Resources/config/routing.yml"
+    prefix:   /

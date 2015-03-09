@@ -1,3 +1,20 @@
 veriatrans_main:
     resource: "@VeriatransMainBundle/Resources/config/routing.yml"
     prefix:   /
+
+
+index:
+    path:     /
+    defaults: { _controller: VeriatransMainBundle:Security:login }
+
+login:
+    path:     /login
+    defaults: { _controller: VeriatransMainBundle:Security:login }
+
+login_check:
+    pattern:   /login_check
+    defaults: { _controller: VeriatransMainBundle:Security:login }
+
+logout:
+    pattern:   /logout
+    defaults: { _controller: VeriatransMainBundle:Security:logout }

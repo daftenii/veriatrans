@@ -224,7 +224,7 @@ a.show-sidebar:hover {
   padding-left: 0;
 }
 .panel-menu > li > a {
-  padding: 0 5px 0 10px;
+  padding: 0 10px 0 10px;
 }
 .panel-menu a.account {
   height: 50px;
@@ -865,6 +865,7 @@ ul.DTTT_dropdown.dropdown-menu > li:hover > a {
   background-color: #AA8383;
   border-color: #A57171;
   color: #f8f8f8;
+  padding: 7px;
 }
 .txt-danger, .has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline {color: #AA8383;}
 .has-error .form-control {border-color: #A57171;}

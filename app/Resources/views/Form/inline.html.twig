@@ -1,0 +1,21 @@
+{#
+ * Created by PhpStorm.
+* User: dorin
+* Date: 3/15/15
+* Time: 9:11 AM
+* @author AfteniiDorin
+* not in use
+#}
+{% extends 'form_table_layout.html.twig' %}
+{% block text_label %}
+{% endblock %}
+{% block text_widget %}
+    <td style="position:relative; padding:0px;">
+        {% set type = type|default('text') %}
+        {{ block('form_widget_simple') }}
+    </td>
+{% endblock %}
+
+{% block form_row %}
+        {{ form_widget(form) }}
+{% endblock form_row %}

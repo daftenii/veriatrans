@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Truck
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\TruckRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Truck
 {
@@ -84,6 +85,19 @@ class Truck
      */
     private $cmrDate;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="CreatedOn", type="integer")
+     */
+    private $createdOn;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="IsDeleted", type="boolean")
+     */
+    private $isDeleted;
 
     /**
      * Get id
@@ -302,4 +316,53 @@ class Truck
     {
         return $this->rcaDate;
     }
+
+    /**
+     * Set createdOn
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * @param integer $rcaDate
+     * @return Truck
+     */
+    public function setCreatedOn($createdOn)
+    {
+        if ($this->createdOn == null) {
+            $this->createdOn = new \DateTime('now');
+        }
+        $this->createdOn = $createdOn;
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return integer
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @return boolean
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return integer
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+
 }

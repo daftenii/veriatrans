@@ -1,3 +1,4 @@
+Nr: Nr
 veriatrans: Veriatrans billing
 welcome: Bun venit,
 user: Utilizator
@@ -5,3 +6,32 @@ password: Parolă
 login: Conectati-vă
 logout: Ieșire
 Bad credentials.: Încercați din nou!
+Confirm delete: Confirmați ștergerea?
+
+TruckList: Lista camioanelor disponibile
+RegistrationNumber: Nr. de înregistrare
+Model: Model
+VIN: Nr. șasi
+CreatedDate: Anul fabricației
+ITPDate: ITP
+LicenceDate: Licența
+RCADate: RCA
+TachographDate: Verificare tahograf
+CMRDate: Asigurarea CMR
+
+DatatableEmpty: Nu există date disponibile în tabel
+DatatableInfo: Afișarea de la _START_ la _END_ din _TOTAL_
+DatatableInfoEmpty: Afișarea de la 0 la 0 din 0
+DatatableInfoFiltered: (filtrat din _MAX_ totale)
+DatatableLengthMenu: Afișiază _MENU_ intrări
+DatatableLoadingRecords: Încărcare...
+DatatableProcessing: Procesare...
+DatatableSearch: Сăutare.
+DatatableZeroRecords: Nu au fost găsite date
+DatatableFirst:  Primul
+DatatableLast: Ultimul
+DatatableNext: Următorul
+DatatablePrvious: Precedentul
+DatatableSortAscending: activează pentru a sorta crescător coloana
+DatatableSortDescending: activează pentru a sorta în descreștere coloana
+

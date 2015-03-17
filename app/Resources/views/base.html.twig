@@ -46,6 +46,8 @@
         {% include '::left_menu.html.twig' %}
         <!--Start Content-->
         <div id="content" class="col-xs-12 col-sm-10">
+            {% block body %}
+            {% endblock %}
             <div id="ajax-content"></div>
         </div>
         <!--End Content-->
@@ -54,5 +56,6 @@
 <!--End Container-->
 
 {% include '::scripts.html.twig' %}
+{% block javascripts %}{% endblock %}
 </body>
 </html>

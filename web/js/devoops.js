@@ -1303,10 +1303,10 @@ function DrawKnob(elem){
 		},
 		release : function (value) {
 			//console.log(this.$.attr('value'));
-			console.log("release : " + value);
+			//console.log("release : " + value);
 		},
 		cancel : function () {
-			console.log("cancel : ", this);
+			//console.log("cancel : ", this);
 		},
 		draw : function () {
 			// "tron" case
@@ -3349,7 +3349,7 @@ function DrawFullCalendar(){
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 $(document).ready(function () {
-	$('body').on('click', '.show-sidebar', function (e) {
+    $('body').on('click', '.show-sidebar', function (e) {
 		e.preventDefault();
 		$('div#main').toggleClass('sidebar-show');
 		setTimeout(MessagesMenuWidth, 250);
@@ -3391,7 +3391,7 @@ $(document).ready(function () {
 			$(this).parents("ul.dropdown-menu").find('a').removeClass('active');
 			$(this).addClass('active')
 		}
-		if ($(this).hasClass('ajax-link')) {
+		/*if ($(this).hasClass('ajax-link')) {
 			e.preventDefault();
 			if ($(this).hasClass('add-full')) {
 				$('#content').addClass('full-content');
@@ -3402,7 +3402,7 @@ $(document).ready(function () {
 			var url = $(this).attr('href');
 			window.location.hash = url;
 			LoadAjaxContent(url);
-		}
+		}*/
 		if ($(this).attr('href') == '#') {
 			e.preventDefault();
 		}
@@ -3493,5 +3493,332 @@ $(document).ready(function () {
 		$('#about').removeClass('about-h');
 	})
 });
+
+function setEditable(id, ExcludeColumns){
+    var Table = $(id+' td');
+    var TableTbody = $(id);
+    var TableTr = $(id+' tr');
+    var CurrentObject = null;
+    var TableWdth = $(id+' tr:first td').length;
+    var TableHeight = $(id+' tr').length;
+    var ArrayTable = [];
+    var TempArray = [];
+    var TdIndex = 0;
+    var TrIndex = 0;
+    var InEditMode = Boolean(EditMode.val());
+
+    for(var i=0; i < TableHeight;i++){
+        var TempArray = [];
+        for(var j=0; j < TableWdth;j++){
+            if(i == (TableHeight-1)){
+                if(j!=0){
+                    TempArray[j] = j;
+                }
+            }else{
+                if($.inArray( j, ExcludeColumns ) == -1){
+                    TempArray[j] = j;
+                }
+            }
+        }
+        ArrayTable[i] = TempArray;
+    }
+    $(document).off( "keyup");
+    Table.off( "click");
+    $('input',Table).off( "blur");
+    $(EditDatatable).off('click');
+
+
+    $(EditDatatable).on('click',function(){
+        if(!InEditMode){
+            EditMode = EditMode.val('1')
+            $(this).css('color','green').css('text-size','18px;').parents('a').css('background-color','yellow');
+            $('tr:last',TableTbody).removeClass('hide');
+            InEditMode = Boolean(EditMode.val());
+            $("#truck").dataTable()._fnAjaxUpdate();
+        }else{
+            EditMode = EditMode.val('');
+            $(this).attr('style','').parents('a').attr('style','');
+            $('tr:last',TableTbody).addClass('hide');
+            InEditMode = Boolean(EditMode.val());
+        }
+    });
+
+    Table.on('click',function(){
+        if(InEditMode){
+            CurrentObject = $(this);
+            var ArrayIndex = [];
+            ArrayIndex[0] = parseInt(CurrentObject.parents('tr').attr('order'));
+            ArrayIndex[1] = parseInt($(CurrentObject).index());
+
+            TdIndex = ArrayIndex[1];
+            TrIndex = ArrayIndex[0];
+            process(ArrayIndex);
+        }
+    });
+/*
+    $('table.editable tbody td').on('click',function(){
+        InEditMode = true
+//        $('input.focused').focus();
+
+    });
+*/
+    Array.prototype.prev = function(col,row) {
+        col = col -0;
+        row = row -0;
+        var old_col = col;
+        var old_row = row;
+        row = row -1;
+        while(typeof this[col][row] == 'undefined' || row == -1){
+            if(row < 0 && col > 0){
+                col--;
+                row = this[col].length;
+                continue;
+            }else if(row <= 0 && col <= 0){
+                return [old_col, old_row];
+            }else if(typeof this[col][row] == "undefined"){
+                row--;
+                continue;
+            }else if(this[col][row] > 0){
+                return [col, row];
+            }
+        }
+        return [col, row];
+    };
+    Array.prototype.next = function(col,row) {
+        col = col -0;
+        row = row +0;
+        var old_col = col;
+        var old_row = row;
+        row = row +1;
+        while(typeof this[col][row] == 'undefined' || row > this[col].length){
+            if(row > this[col].length && col < (TableHeight-1)){
+                col++;
+                row = 0;
+                continue;
+            }else if(row > this[col].length && col == TableHeight-1){
+                return [old_col,old_row];
+            }else if(typeof this[col][row] == "undefined"){
+                row++;
+                continue;
+            }else if(this[col][row] > 0){
+                return [col, row];
+            }
+        }
+        return [col, row];
+    };
+
+
+
+    $(document).keyup(function(e) {
+        var CurrentTr = $(id+' tr[order="'+TrIndex+'"]');
+        var Current = $('td:nth-child('+(TdIndex+1)+')', CurrentTr);
+        var Value = Current.find('input').val();
+        var Id = Current.parents('tr').attr('id');
+        var InsertRowID = $('tr:last',TableTbody).attr('id');
+        var isLastRow = InsertRowID == Id;
+        var inputsInRow = $('td input',CurrentTr).length;
+
+        var fullInputsInRow = $('input[type="text"]', CurrentTr).filter(function () {
+            var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
+            var isDate = column.slice(-4) == 'date';
+            if(isDate){
+                var val = this.value.replace(/[_-]/g,'')
+                return !!val;
+            }else{
+                return !!this.value;
+            }
+        }).length;
+
+        var saveButton = $('i.fa-save',CurrentTr);
+        saveButton.off('click');
+        if(isLastRow && fullInputsInRow == inputsInRow){
+            saveButton.css('color','green').css('font-size','20px').css('cursor','pointer');
+            saveButton.on('click',function(){
+                insert();
+            })
+        }else{
+            $('i.fa-save',CurrentTr).attr('style','');
+        }
+
+        switch(e.which) {
+            case 38: // up
+                if(InEditMode){
+//                    console.log('after:',TrIndex,TdIndex);
+                    var PrevIndex = ArrayTable.prev(TrIndex,TdIndex);
+                    //console.log('before',PrevIndex);
+                    //console.log(ArrayTable,PrevIndex);
+                    TdIndex = PrevIndex[1];
+                    TrIndex = PrevIndex[0];
+                    process(PrevIndex);
+                }
+                break;
+/*
+            case 33: // left
+                alert('up')
+                break;
+*/
+            case 13:
+                if(isLastRow && fullInputsInRow == inputsInRow){
+                    insert();
+                }
+                if(InEditMode && !isLastRow){
+                    var UpdatePath1 = UpdatePath.replace("_id_", Id);
+                    var table = $("#truck").DataTable();
+                    var columnName = table.context[0].aoColumns[TdIndex].mData;
+                    $.ajax({
+                        //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
+                        url: UpdatePath1,
+                        data: 'column='+columnName+'&value='+Value+'&id='+Id,
+                        type: 'PUT',
+                        success: function(data) {
+                            if(data.success){
+                                Current.effect("highlight", {color:'green'}, 700);
+                            }else{
+                                Current.effect("highlight", {color:'red'}, 700);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        },
+                        dataType: "json",
+                        async: false
+                    });
+                }
+            case 40: // down
+                if(InEditMode){
+
+                    var NextIndex = ArrayTable.next(TrIndex,TdIndex);
+                    //console.log('before',NextIndex);
+                    TrIndex = NextIndex[0];
+                    TdIndex = NextIndex[1];
+                    process(NextIndex);
+
+                }
+                break;
+/*
+            case 34: // right
+                alert('down')
+                break;
+*/
+            default: return;
+        }
+
+        function insert(){
+            var truckParams = {};
+            var postParams = {truckParams};
+            $('td input',CurrentTr).each(function( index,value ) {
+                var td = $(value).parents('td');
+                var column = Current.parents('table').find('thead th:nth-child('+(td.index()+1)+')').data('column-name');
+                var value = $(value).val();
+                postParams['truckParams'][column] = value;
+            });
+            $.ajax({
+                //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
+                url: CreateTruck,
+                data: postParams,
+                type: 'POST',
+                success: function(data) {
+                    if(data.success){
+                        $("#truck").dataTable()._fnAjaxUpdate();
+                        $("tr:first",TableTbody).effect("highlight", {color:"green"}, 700);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                },
+                dataType: "json",
+                async: false
+            });
+        }
+
+        e.preventDefault();
+    });
+
+    function process(ArrayIndex){
+        $('input',Table).off( "blur");
+        reset();
+        //ArrayIndex[1]++;
+        //console.log(ArrayIndex);
+        var Current = $(id+' tr[order="'+ArrayIndex[0]+'"] td:nth-child('+(ArrayIndex[1]+1)+')');
+
+        var index = ArrayIndex[1];
+        //console.log(ArrayIndex[0]+'=='+TableHeight);
+        if((ArrayIndex[0]+1)==TableHeight){
+                $('input',Current).focus();
+        }else{
+            if($.inArray( index, ExcludeColumns ) == -1){
+                if(typeof Current.find('input').val() == 'undefined'){
+                    var text = Current.text();
+                    $(this).css('position','relative');
+                    var maxlength = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('length');
+                    var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
+                    var isDate = column.slice(-4) == 'date';
+                    var dateAttr = '';
+                    if(isDate){
+                        dateAttr = 'placeholder="DD-MM-YYYY" data-mask="date"';
+                    }
+                    Current.html('<input type="text" value="'+text+'" name="'+index+'" maxlength="'+maxlength+'" style="margin:0 auto;width:150px; position:absolute;" '+dateAttr+'>')
+                    $('input',Current).focus();
+
+                    $("[data-mask='date']").mask("99-99-9999");
+                    $('input',Table).on('blur',function(){
+                        reset();
+                    });
+                }
+            }
+        }
+    }
+
+    function reset(){
+        $('table.editable tbody tr[role="row"] input').each(function( index ) {
+            var value = $(this).val();
+            $(this).parents('td').html(value);
+        });
+    }
+
+    /*function refreshDataTable(tableId, urlData)
+    {
+        $.getJSON(urlData, null, function( json )
+        {
+            var table = $(tableId).dataTable();
+            var oSettings = table.fnSettings();
+
+            table.fnClearTable(this);
+
+            for (var i=0; i<json.aaData.length; i++)
+            {
+                table.oApi._fnAddData(oSettings, json.aaData[i]);
+            }
+
+            oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+            table.fnDraw();
+        });
+    }*/
+}
+
+function convertTimestamp(timestamp) {
+    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+        yyyy = d.getFullYear(),
+        mm = ('0' + (d.getMonth() + 1)).slice(-2), // Months are zero based. Add leading 0.
+        dd = ('0' + d.getDate()).slice(-2), // Add leading 0.
+        hh = d.getHours(),
+        h = hh,
+        min = ('0' + d.getMinutes()).slice(-2), // Add leading 0.
+        ampm = 'AM',
+        time;
+    if (hh > 12) {
+        h = hh - 12;
+        ampm = 'PM';
+    } else if (hh === 12) {
+        h = 12;
+        ampm = 'PM';
+    } else if (hh == 0) {
+        h = 12;
+    }
+    //time = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+    time = dd + '-' + mm + '-' + yyyy;
+    return time;
+}
+
 
 

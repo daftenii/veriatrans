@@ -336,9 +336,9 @@ a.show-sidebar:hover {
   padding-left: 15px;
   line-height: 24px;
 }
-.box-name:hover {
+/*.box-name:hover {
   cursor: move;
-}
+}*/
 .box-name > i {
   margin-right:5px;
 }
@@ -387,6 +387,7 @@ a.show-sidebar:hover {
   float: left;
   text-align: center;
   color: #505559;
+  padding-top:5px;
   -webkit-transition: 0.2s;
   -moz-transition: 0.2s;
   -o-transition: 0.2s;
@@ -460,6 +461,7 @@ table.no-border-bottom tr:last-child td {
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   border-top: 1px solid #bbb;
+    text-align: center;
 }
 .table-bordered {
     border: 1px solid #bbb;

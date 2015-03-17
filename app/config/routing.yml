@@ -1,3 +1,7 @@
+settings:
+     resource: "@VeriatransMainBundle/Controller"
+     type: annotation
+
 veriatrans_main:
     resource: "@VeriatransMainBundle/Resources/config/routing.yml"
     prefix:   /
@@ -18,3 +22,4 @@ login_check:
 logout:
     pattern:   /logout
     defaults: { _controller: VeriatransMainBundle:Security:logout }
+

@@ -1,0 +1,13 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+app/cache/
+app/logs/
+vendor/
+.idea/
+
+app/cache/*
+app/logs/*
+vendor/*
+.idea/*
+readme.txt
+.idea/workspace.xml

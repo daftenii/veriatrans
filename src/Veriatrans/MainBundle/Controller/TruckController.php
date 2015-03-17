@@ -46,6 +46,7 @@ class TruckController extends Controller
         $truckForm = $this->createForm( new TruckType() );
         return array(
             'truckForm' => $truckForm->createView(),
+            'currentMenuItem'      => 'truck'
         );
     }
 

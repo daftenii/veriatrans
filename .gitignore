@@ -9,4 +9,4 @@ vendor/*
 readme.txt
 .directory
 readme.txt
-
+app/config/parameters.yml

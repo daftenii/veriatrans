@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Client
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\ClientRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Client
 {
@@ -28,6 +29,13 @@ class Client
      */
     private $companyName;
 
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="IsDeleted", type="boolean")
+     */
+    private $isDeleted;
 
     /**
      * Get id
@@ -60,5 +68,26 @@ class Client
     public function getCompanyName()
     {
         return $this->companyName;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @return boolean
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return integer
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
     }
 }

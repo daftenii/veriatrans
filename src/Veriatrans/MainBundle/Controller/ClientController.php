@@ -12,19 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Validator\Constraints\Date;
-use Veriatrans\MainBundle\Entity\Truck;
-use Veriatrans\MainBundle\Form\TruckType;
+use Veriatrans\MainBundle\Entity\Client;
+//use Veriatrans\MainBundle\Form\ClientType;
 /**
- * Class TruckController
+ * Class ClientController
  * @package Veriatrans\MainBundle\Controller
  * @Route("/admin")
  */
-class TruckController extends Controller
+class ClientController extends Controller
 {
     /**
-     * Create new truck
+     * Create new client
      *
-     * @Route("/create-truck", name="create_truck")
+     * @Route("/create-client", name="create_client")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -35,33 +35,33 @@ class TruckController extends Controller
     }
 
     /**
-     * Retrieve all available trucks
+     * Retrieve all available clients
      *
-     * @Route("/list-trucks", name="list_trucks")
+     * @Route("/list-clients", name="list_clients")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
-    public function listTrucksAction(){
-        $truckForm = $this->createForm( new TruckType() );
+    public function listClientsAction(){
+        //$clientForm = $this->createForm( new ClientType() );
         return array(
-            'truckForm' => $truckForm->createView(),
+            'clientForm' => '',
         );
     }
 
     /**
      *
-     * @Route("/json-list-trucks", name="json_list_trucks")
+     * @Route("/json-list-clients", name="json_list_clients")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
     public function jsonRetrieveAction(Request $request){
 
-/*        // $_GET parameters
-        $request->query->get('name');
-        // $_POST parameters
-        $request->request->get('name');*/
+        /*        // $_GET parameters
+                $request->query->get('name');
+                // $_POST parameters
+                $request->request->get('name');*/
 
         $iDisplayLength = $request->query->get('iDisplayLength');
         $iDisplayStart = $request->query->get('iDisplayStart');
@@ -70,22 +70,22 @@ class TruckController extends Controller
         $mDataProp_0 = $request->query->get("mDataProp_{$iSortCol_0}");
 
         $em = $this->getDoctrine()->getManager();
-        $Trucks = $em->getRepository( 'VeriatransMainBundle:Truck' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllTrucks = $em->getRepository( 'VeriatransMainBundle:Truck' )->findAll();
+        $Clients = $em->getRepository( 'VeriatransMainBundle:Client' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
+        $AllClients = $em->getRepository( 'VeriatransMainBundle:Client' )->findAll();
 
-        $Trucks = array(
-            'iTotalRecords' => count($AllTrucks),
-            'iTotalDisplayRecords' => count($AllTrucks),
+        $Clients = array(
+            'iTotalRecords' => count($AllClients),
+            'iTotalDisplayRecords' => count($AllClients),
             'sEcho' => 0,
-            'aaData' => $Trucks
+            'aaData' => $Clients
         );
-        print(json_encode($Trucks));
+        print(json_encode($Clients));
         exit;
     }
 
     /**
      *
-     * @Route("/json-retrieve-truck-columns-length", name="json_retrieve_truck_columns_length")
+     * @Route("/json-retrieve-client-columns-length", name="json_retrieve_client_columns_length")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -94,21 +94,21 @@ class TruckController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
-        $tableName = $em->getClassMetadata('VeriatransMainBundle:Truck')->getTableName();
-        $TruckColumns = $em->getRepository( 'VeriatransMainBundle:Truck' )->getColumnsLength($tableName,$databaseName);
-        $TempTruckColumn = array();
-        foreach($TruckColumns AS $EachColumn){
-            $TempTruckColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
+        $tableName = $em->getClassMetadata('VeriatransMainBundle:Client')->getTableName();
+        $ClientColumns = $em->getRepository( 'VeriatransMainBundle:Client' )->getColumnsLength($tableName,$databaseName);
+        $TempClientColumn = array();
+        foreach($ClientColumns AS $EachColumn){
+            $TempClientColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
         }
-        $TruckColumns = $TempTruckColumn;
-        unset($TempTruckColumn);
+        $ClientColumns = $TempClientColumn;
+        unset($TempClientColumn);
 
-        print(json_encode($TruckColumns));
+        print(json_encode($ClientColumns));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-update-truck", name="json_update_truck")
+     * @Route("/{id}/json-update-client", name="json_update_client")
      * @Method("PUT")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -118,9 +118,9 @@ class TruckController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Truck          = $em->getRepository( 'VeriatransMainBundle:Truck' )->find( $id );
-        if ( !$Truck ) {
-            throw $this->createNotFoundException( $translator->trans( 'Truck not found.', array(), 'MainBundle' ) );
+        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
+        if ( !$Client ) {
+            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
         }
 
         $column = $request->request->get('column');
@@ -130,14 +130,14 @@ class TruckController extends Controller
         if($isDate){
             $value = strtotime($value);
         }
-        $updateResult = $em->getRepository( 'VeriatransMainBundle:Truck' )->updateOneCell(array($column=>$value),(integer)$id);
+        $updateResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array($column=>$value),(integer)$id);
 
         print(json_encode(array('success'=>$updateResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-delete-truck", name="json_delete_truck")
+     * @Route("/{id}/json-delete-client", name="json_delete_client")
      * @Method("DELETE")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -147,18 +147,18 @@ class TruckController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Truck          = $em->getRepository( 'VeriatransMainBundle:Truck' )->find( $id );
-        if ( !$Truck ) {
-            throw $this->createNotFoundException( $translator->trans( 'Truck not found.', array(), 'MainBundle' ) );
+        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
+        if ( !$Client ) {
+            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
         }
-        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Truck' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
+        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
 
         print(json_encode(array('success'=>$deleteResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/json-create-truck", name="json_create_truck")
+     * @Route("/json-create-client", name="json_create_client")
      * @Method("POST")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -176,7 +176,7 @@ class TruckController extends Controller
             }
         }
 
-        $createResult = $em->getRepository( 'VeriatransMainBundle:Truck' )->create($post);
+        $createResult = $em->getRepository( 'VeriatransMainBundle:Client' )->create($post);
 
         print(json_encode(array('success'=>(boolean)$createResult, 'id'=>$createResult, 'message'=>'')));
         exit;

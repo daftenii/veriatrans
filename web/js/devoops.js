@@ -3534,7 +3534,7 @@ function setEditable(id, ExcludeColumns){
             $(this).css('color','green').css('text-size','18px;').parents('a').css('background-color','yellow');
             $('tr:last',TableTbody).removeClass('hide');
             InEditMode = Boolean(EditMode.val());
-            $("#truck").dataTable()._fnAjaxUpdate();
+            DataTableID.dataTable()._fnAjaxUpdate();
         }else{
             EditMode = EditMode.val('');
             $(this).attr('style','').parents('a').attr('style','');
@@ -3663,7 +3663,7 @@ function setEditable(id, ExcludeColumns){
                 }
                 if(InEditMode && !isLastRow){
                     var UpdatePath1 = UpdatePath.replace("_id_", Id);
-                    var table = $("#truck").DataTable();
+                    var table = DataTableID.DataTable();
                     var columnName = table.context[0].aoColumns[TdIndex].mData;
                     $.ajax({
                         //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
@@ -3704,22 +3704,22 @@ function setEditable(id, ExcludeColumns){
         }
 
         function insert(){
-            var truckParams = {};
-            var postParams = {truckParams};
+            var params = {};
+            var postParams = {params};
             $('td input',CurrentTr).each(function( index,value ) {
                 var td = $(value).parents('td');
                 var column = Current.parents('table').find('thead th:nth-child('+(td.index()+1)+')').data('column-name');
                 var value = $(value).val();
-                postParams['truckParams'][column] = value;
+                postParams['params'][column] = value;
             });
             $.ajax({
                 //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
-                url: CreateTruck,
+                url: CreatePath,
                 data: postParams,
                 type: 'POST',
                 success: function(data) {
                     if(data.success){
-                        $("#truck").dataTable()._fnAjaxUpdate();
+                        DataTableID.dataTable()._fnAjaxUpdate();
                         $("tr:first",TableTbody).effect("highlight", {color:"green"}, 700);
                     }
                 },

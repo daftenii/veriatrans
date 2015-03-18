@@ -10,3 +10,5 @@ readme.txt
 .directory
 readme.txt
 app/config/parameters.yml
+app/bootstrap.php.cache
+composer.lock

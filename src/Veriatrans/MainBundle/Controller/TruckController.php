@@ -43,9 +43,9 @@ class TruckController extends Controller
      * @Template()
      */
     public function listTrucksAction(){
-        $truckForm = $this->createForm( new TruckType() );
+        //$truckForm = $this->createForm( new TruckType() );
         return array(
-            'truckForm' => $truckForm->createView(),
+           // 'truckForm' => $truckForm->createView(),
             'currentMenuItem'      => 'truck'
         );
     }

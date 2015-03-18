@@ -49,9 +49,10 @@ class ClientController extends Controller
      * @Template()
      */
     public function listClientsAction(){
-        //$clientForm = $this->createForm( new ClientType() );
+       // $clientForm = $this->createForm( new ClientType() );
         return array(
-            'clientForm' => '',
+          //  'clientForm' => $clientForm->createView(),
+            'currentMenuItem'      => 'client'
         );
     }
 

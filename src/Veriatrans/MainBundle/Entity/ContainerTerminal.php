@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * ContainerTerminal
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\ContainerTerminalRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class ContainerTerminal
 {
@@ -54,7 +55,7 @@ class ContainerTerminal
      *
      * @ORM\Column(name="Country", type="string", length=2)
      */
-    private $country;
+        private $country;
 
     /**
      * @var string
@@ -63,6 +64,12 @@ class ContainerTerminal
      */
     private $postalCode;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="IsDeleted", type="boolean")
+     */
+    private $isDeleted;
 
     /**
      * Get id
@@ -210,5 +217,26 @@ class ContainerTerminal
     public function getPostalCode()
     {
         return $this->postalCode;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @return boolean
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return integer
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
     }
 }

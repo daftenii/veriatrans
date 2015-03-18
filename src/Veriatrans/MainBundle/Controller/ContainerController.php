@@ -1,8 +1,8 @@
 <?php
 /**
  * User: dorin
- * Date: 3/17/15
- * Time: 2:46 PM
+ * Date: 3/18/15
+ * Time: 10:34 AM
  * @author Aftenii Dorin
  */
 
@@ -18,19 +18,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Validator\Constraints\Date;
-use Veriatrans\MainBundle\Entity\Client;
-//use Veriatrans\MainBundle\Form\ClientType;
+use Veriatrans\MainBundle\Entity\ContainerTerminal;
+//use Veriatrans\MainBundle\Form\ContainerType;
 /**
- * Class ClientController
+ * Class ContainerController
  * @package Veriatrans\MainBundle\Controller
  * @Route("/admin")
  */
-class ClientController extends Controller
+class ContainerController extends Controller
 {
     /**
-     * Create new client
+     * Create new container
      *
-     * @Route("/create-client", name="create_client")
+     * @Route("/create-container", name="create_container")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -41,23 +41,23 @@ class ClientController extends Controller
     }
 
     /**
-     * Retrieve all available clients
+     * Retrieve all available containers
      *
-     * @Route("/list-clients", name="list_clients")
+     * @Route("/list-containers", name="list_containers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
-    public function listClientsAction(){
-        //$clientForm = $this->createForm( new ClientType() );
+    public function listContainersAction(){
+        //$containerForm = $this->createForm( new ContainerType() );
         return array(
-            'clientForm' => '',
+            'currentMenuItem' => 'container',
         );
     }
 
     /**
      *
-     * @Route("/json-list-clients", name="json_list_clients")
+     * @Route("/json-list-containers", name="json_list_containers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -76,22 +76,22 @@ class ClientController extends Controller
         $mDataProp_0 = $request->query->get("mDataProp_{$iSortCol_0}");
 
         $em = $this->getDoctrine()->getManager();
-        $Clients = $em->getRepository( 'VeriatransMainBundle:Client' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllClients = $em->getRepository( 'VeriatransMainBundle:Client' )->findAll();
+        $Containers = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
+        $AllContainers = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->findAll();
 
-        $Clients = array(
-            'iTotalRecords' => count($AllClients),
-            'iTotalDisplayRecords' => count($AllClients),
+        $Containers = array(
+            'iTotalRecords' => count($AllContainers),
+            'iTotalDisplayRecords' => count($AllContainers),
             'sEcho' => 0,
-            'aaData' => $Clients
+            'aaData' => $Containers
         );
-        print(json_encode($Clients));
+        print(json_encode($Containers));
         exit;
     }
 
     /**
      *
-     * @Route("/json-retrieve-client-columns-length", name="json_retrieve_client_columns_length")
+     * @Route("/json-retrieve-container-columns-length", name="json_retrieve_container_columns_length")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -100,21 +100,21 @@ class ClientController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
-        $tableName = $em->getClassMetadata('VeriatransMainBundle:Client')->getTableName();
-        $ClientColumns = $em->getRepository( 'VeriatransMainBundle:Client' )->getColumnsLength($tableName,$databaseName);
-        $TempClientColumn = array();
-        foreach($ClientColumns AS $EachColumn){
-            $TempClientColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
+        $tableName = $em->getClassMetadata('VeriatransMainBundle:ContainerTerminal')->getTableName();
+        $ContainerColumns = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->getColumnsLength($tableName,$databaseName);
+        $TempContainerColumn = array();
+        foreach($ContainerColumns AS $EachColumn){
+            $TempContainerColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
         }
-        $ClientColumns = $TempClientColumn;
-        unset($TempClientColumn);
+        $ContainerColumns = $TempContainerColumn;
+        unset($TempContainerColumn);
 
-        print(json_encode($ClientColumns));
+        print(json_encode($ContainerColumns));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-update-client", name="json_update_client")
+     * @Route("/{id}/json-update-container", name="json_update_container")
      * @Method("PUT")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -124,9 +124,9 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Container          = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->find( $id );
+        if ( !$Container ) {
+            throw $this->createNotFoundException( $translator->trans( 'Container not found.', array(), 'MainBundle' ) );
         }
 
         $column = $request->request->get('column');
@@ -136,14 +136,14 @@ class ClientController extends Controller
         if($isDate){
             $value = strtotime($value);
         }
-        $updateResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array($column=>$value),(integer)$id);
+        $updateResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->updateOneCell(array($column=>$value),(integer)$id);
 
         print(json_encode(array('success'=>$updateResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-delete-client", name="json_delete_client")
+     * @Route("/{id}/json-delete-container", name="json_delete_container")
      * @Method("DELETE")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -153,18 +153,18 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Container          = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->find( $id );
+        if ( !$Container ) {
+            throw $this->createNotFoundException( $translator->trans( 'Container not found.', array(), 'MainBundle' ) );
         }
-        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
+        $deleteResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
 
         print(json_encode(array('success'=>$deleteResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/json-create-client", name="json_create_client")
+     * @Route("/json-create-container", name="json_create_container")
      * @Method("POST")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -182,7 +182,7 @@ class ClientController extends Controller
             }
         }
 
-        $createResult = $em->getRepository( 'VeriatransMainBundle:Client' )->create($post);
+        $createResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->create($post);
 
         print(json_encode(array('success'=>(boolean)$createResult, 'id'=>$createResult, 'message'=>'')));
         exit;

@@ -14,10 +14,10 @@
             <ul class="dropdown-menu">
                 <li><a class="ajax-link {% if currentMenuItem == 'truck' %} active-parent active {% endif %}" href="{{ path('list_trucks') }}">Camioane</a></li>
                 <li><a class="ajax-link" href="{{ path('list_clients') }}">Clienți</a></li>
-                <li><a class="ajax-link" href="ajax/charts_coindesk.html">Destinații</a></li>
-                <li><a class="ajax-link" href="ajax/charts_coindesk.html">Remorci</a></li>
-                <li><a class="ajax-link" href="ajax/charts_coindesk.html">Șoferi</a></li>
-                <li><a class="ajax-link" href="ajax/charts_flot.html">Terminale (Containere)</a></li>
+                <li><a class="ajax-link {% if currentMenuItem == 'destination' %} active-parent active {% endif %}" href="{{ path('list_destinations') }}">Destinații</a></li>
+                <li><a class="ajax-link {% if currentMenuItem == 'trailer' %} active-parent active {% endif %}" href="{{ path('list_trailers') }}">Remorci</a></li>
+                <li><a class="ajax-link {% if currentMenuItem == 'driver' %} active-parent active {% endif %}" href="{{ path('list_drivers') }}">Șoferi</a></li>
+                <li><a class="ajax-link {% if currentMenuItem == 'container' %} active-parent active {% endif %}" href="{{ path('list_containers') }}">Terminale (Containere)</a></li>
             </ul>
         </li>
     </ul>

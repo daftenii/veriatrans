@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Driver
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\DriverRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Driver
 {
@@ -55,6 +56,13 @@ class Driver
      * @ORM\Column(name="MedicalIssueDate", type="integer")
      */
     private $medicalIssueDate;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="IsDeleted", type="boolean")
+     */
+    private $isDeleted;
 
 
     /**
@@ -180,5 +188,26 @@ class Driver
     public function getMedicalIssueDate()
     {
         return $this->medicalIssueDate;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @return boolean
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return integer
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
     }
 }

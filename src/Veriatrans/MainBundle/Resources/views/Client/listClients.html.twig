@@ -65,7 +65,7 @@
         DeletePath                      = '{{ path('json_delete_client',{'id':'_id_'}) }}';
         CreatePath                      = '{{ path('json_create_client') }}';
         RetrieveClient                  = '{{ path('json_list_clients') }}';
-        EditDatatable                   = 'i.edit-datatable';
+        EditDatatable                   = $('i.edit-datatable').parent();
         EditMode                        = $('input[name="InEditMode"]');
         DataTableID                     = $('#client');
 
@@ -121,7 +121,7 @@
                         classHide = 'hide';
                     }
 
-                    var html = '<tr id="'+(TableRows)+'" order="'+(TableRows-1)+'" class="'+classHide+'">'+
+                    var html = '<tr id="0"  order="'+(TableRows-1)+'" class="'+classHide+'">'+
                             '<td>&nbsp;<i class="fa fa-save"></i></td>'+
                             '<td style="position:relative;"><input type="text" value="" class="datatable-default-element-focused" name="1" style="position:absolute;"></td>'+
                             '</tr>';

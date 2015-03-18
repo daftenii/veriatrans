@@ -3525,19 +3525,19 @@ function setEditable(id, ExcludeColumns){
     $(document).off( "keyup");
     Table.off( "click");
     $('input',Table).off( "blur");
-    $(EditDatatable).off('click');
+    EditDatatable.off('click');
 
 
-    $(EditDatatable).on('click',function(){
+    EditDatatable.on('click',function(){
         if(!InEditMode){
             EditMode = EditMode.val('1')
-            $(this).css('color','green').css('text-size','18px;').parents('a').css('background-color','yellow');
+            $('i',this).css('color','green').css('text-size','18px;').parents('a').css('background-color','yellow');
             $('tr:last',TableTbody).removeClass('hide');
             InEditMode = Boolean(EditMode.val());
             DataTableID.dataTable()._fnAjaxUpdate();
         }else{
             EditMode = EditMode.val('');
-            $(this).attr('style','').parents('a').attr('style','');
+            $('i',this).attr('style','').parents('a').attr('style','');
             $('tr:last',TableTbody).addClass('hide');
             InEditMode = Boolean(EditMode.val());
         }

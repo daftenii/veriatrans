@@ -2,7 +2,7 @@
 /**
  * User: dorin
  * Date: 3/17/15
- * Time: 2:46 PM
+ * Time: 8:15 PM
  * @author Aftenii Dorin
  */
 
@@ -18,19 +18,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Validator\Constraints\Date;
-use Veriatrans\MainBundle\Entity\Client;
-//use Veriatrans\MainBundle\Form\ClientType;
+use Veriatrans\MainBundle\Entity\Driver;
+//use Veriatrans\MainBundle\Form\DriverType;
 /**
- * Class ClientController
+ * Class DriverController
  * @package Veriatrans\MainBundle\Controller
  * @Route("/admin")
  */
-class ClientController extends Controller
+class DriverController extends Controller
 {
     /**
-     * Create new client
+     * Create new driver
      *
-     * @Route("/create-client", name="create_client")
+     * @Route("/create-driver", name="create_driver")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -41,23 +41,23 @@ class ClientController extends Controller
     }
 
     /**
-     * Retrieve all available clients
+     * Retrieve all available drivers
      *
-     * @Route("/list-clients", name="list_clients")
+     * @Route("/list-drivers", name="list_drivers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
-    public function listClientsAction(){
-        //$clientForm = $this->createForm( new ClientType() );
+    public function listDriversAction(){
+        //$driverForm = $this->createForm( new DriverType() );
         return array(
-            'clientForm' => '',
+            'currentMenuItem' => 'driver',
         );
     }
 
     /**
      *
-     * @Route("/json-list-clients", name="json_list_clients")
+     * @Route("/json-list-drivers", name="json_list_drivers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -76,22 +76,22 @@ class ClientController extends Controller
         $mDataProp_0 = $request->query->get("mDataProp_{$iSortCol_0}");
 
         $em = $this->getDoctrine()->getManager();
-        $Clients = $em->getRepository( 'VeriatransMainBundle:Client' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllClients = $em->getRepository( 'VeriatransMainBundle:Client' )->findAll();
+        $Drivers = $em->getRepository( 'VeriatransMainBundle:Driver' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
+        $AllDrivers = $em->getRepository( 'VeriatransMainBundle:Driver' )->findAll();
 
-        $Clients = array(
-            'iTotalRecords' => count($AllClients),
-            'iTotalDisplayRecords' => count($AllClients),
+        $Drivers = array(
+            'iTotalRecords' => count($AllDrivers),
+            'iTotalDisplayRecords' => count($AllDrivers),
             'sEcho' => 0,
-            'aaData' => $Clients
+            'aaData' => $Drivers
         );
-        print(json_encode($Clients));
+        print(json_encode($Drivers));
         exit;
     }
 
     /**
      *
-     * @Route("/json-retrieve-client-columns-length", name="json_retrieve_client_columns_length")
+     * @Route("/json-retrieve-driver-columns-length", name="json_retrieve_driver_columns_length")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -100,21 +100,21 @@ class ClientController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
-        $tableName = $em->getClassMetadata('VeriatransMainBundle:Client')->getTableName();
-        $ClientColumns = $em->getRepository( 'VeriatransMainBundle:Client' )->getColumnsLength($tableName,$databaseName);
-        $TempClientColumn = array();
-        foreach($ClientColumns AS $EachColumn){
-            $TempClientColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
+        $tableName = $em->getClassMetadata('VeriatransMainBundle:Driver')->getTableName();
+        $DriverColumns = $em->getRepository( 'VeriatransMainBundle:Driver' )->getColumnsLength($tableName,$databaseName);
+        $TempDriverColumn = array();
+        foreach($DriverColumns AS $EachColumn){
+            $TempDriverColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
         }
-        $ClientColumns = $TempClientColumn;
-        unset($TempClientColumn);
+        $DriverColumns = $TempDriverColumn;
+        unset($TempDriverColumn);
 
-        print(json_encode($ClientColumns));
+        print(json_encode($DriverColumns));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-update-client", name="json_update_client")
+     * @Route("/{id}/json-update-driver", name="json_update_driver")
      * @Method("PUT")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -124,9 +124,9 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Driver          = $em->getRepository( 'VeriatransMainBundle:Driver' )->find( $id );
+        if ( !$Driver ) {
+            throw $this->createNotFoundException( $translator->trans( 'Driver not found.', array(), 'MainBundle' ) );
         }
 
         $column = $request->request->get('column');
@@ -136,14 +136,14 @@ class ClientController extends Controller
         if($isDate){
             $value = strtotime($value);
         }
-        $updateResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array($column=>$value),(integer)$id);
+        $updateResult = $em->getRepository( 'VeriatransMainBundle:Driver' )->updateOneCell(array($column=>$value),(integer)$id);
 
         print(json_encode(array('success'=>$updateResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-delete-client", name="json_delete_client")
+     * @Route("/{id}/json-delete-driver", name="json_delete_driver")
      * @Method("DELETE")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -153,18 +153,18 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Driver          = $em->getRepository( 'VeriatransMainBundle:Driver' )->find( $id );
+        if ( !$Driver ) {
+            throw $this->createNotFoundException( $translator->trans( 'Driver not found.', array(), 'MainBundle' ) );
         }
-        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
+        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Driver' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
 
         print(json_encode(array('success'=>$deleteResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/json-create-client", name="json_create_client")
+     * @Route("/json-create-driver", name="json_create_driver")
      * @Method("POST")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -182,7 +182,7 @@ class ClientController extends Controller
             }
         }
 
-        $createResult = $em->getRepository( 'VeriatransMainBundle:Client' )->create($post);
+        $createResult = $em->getRepository( 'VeriatransMainBundle:Driver' )->create($post);
 
         print(json_encode(array('success'=>(boolean)$createResult, 'id'=>$createResult, 'message'=>'')));
         exit;

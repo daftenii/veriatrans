@@ -2,10 +2,9 @@
 /**
  * User: dorin
  * Date: 3/17/15
- * Time: 2:46 PM
+ * Time: 7:50 PM
  * @author Aftenii Dorin
  */
-
 namespace Veriatrans\MainBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,19 +17,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Validator\Constraints\Date;
-use Veriatrans\MainBundle\Entity\Client;
-//use Veriatrans\MainBundle\Form\ClientType;
+use Veriatrans\MainBundle\Entity\Trailer;
+//use Veriatrans\MainBundle\Form\TrailerType;
 /**
- * Class ClientController
+ * Class TrailerController
  * @package Veriatrans\MainBundle\Controller
  * @Route("/admin")
  */
-class ClientController extends Controller
+class TrailerController extends Controller
 {
     /**
-     * Create new client
+     * Create new trailer
      *
-     * @Route("/create-client", name="create_client")
+     * @Route("/create-trailer", name="create_trailer")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -41,23 +40,23 @@ class ClientController extends Controller
     }
 
     /**
-     * Retrieve all available clients
+     * Retrieve all available trailers
      *
-     * @Route("/list-clients", name="list_clients")
+     * @Route("/list-trailers", name="list_trailers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
-    public function listClientsAction(){
-        //$clientForm = $this->createForm( new ClientType() );
+    public function listTrailersAction(){
+        //$trailerForm = $this->createForm( new TrailerType() );
         return array(
-            'clientForm' => '',
+            'currentMenuItem' => 'trailer',
         );
     }
 
     /**
      *
-     * @Route("/json-list-clients", name="json_list_clients")
+     * @Route("/json-list-trailers", name="json_list_trailers")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -76,22 +75,22 @@ class ClientController extends Controller
         $mDataProp_0 = $request->query->get("mDataProp_{$iSortCol_0}");
 
         $em = $this->getDoctrine()->getManager();
-        $Clients = $em->getRepository( 'VeriatransMainBundle:Client' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllClients = $em->getRepository( 'VeriatransMainBundle:Client' )->findAll();
+        $Trailers = $em->getRepository( 'VeriatransMainBundle:Trailer' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
+        $AllTrailers = $em->getRepository( 'VeriatransMainBundle:Trailer' )->findAll();
 
-        $Clients = array(
-            'iTotalRecords' => count($AllClients),
-            'iTotalDisplayRecords' => count($AllClients),
+        $Trailers = array(
+            'iTotalRecords' => count($AllTrailers),
+            'iTotalDisplayRecords' => count($AllTrailers),
             'sEcho' => 0,
-            'aaData' => $Clients
+            'aaData' => $Trailers
         );
-        print(json_encode($Clients));
+        print(json_encode($Trailers));
         exit;
     }
 
     /**
      *
-     * @Route("/json-retrieve-client-columns-length", name="json_retrieve_client_columns_length")
+     * @Route("/json-retrieve-trailer-columns-length", name="json_retrieve_trailer_columns_length")
      * @Method("GET")
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
@@ -100,21 +99,21 @@ class ClientController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
-        $tableName = $em->getClassMetadata('VeriatransMainBundle:Client')->getTableName();
-        $ClientColumns = $em->getRepository( 'VeriatransMainBundle:Client' )->getColumnsLength($tableName,$databaseName);
-        $TempClientColumn = array();
-        foreach($ClientColumns AS $EachColumn){
-            $TempClientColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
+        $tableName = $em->getClassMetadata('VeriatransMainBundle:Trailer')->getTableName();
+        $TrailerColumns = $em->getRepository( 'VeriatransMainBundle:Trailer' )->getColumnsLength($tableName,$databaseName);
+        $TempTrailerColumn = array();
+        foreach($TrailerColumns AS $EachColumn){
+            $TempTrailerColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
         }
-        $ClientColumns = $TempClientColumn;
-        unset($TempClientColumn);
+        $TrailerColumns = $TempTrailerColumn;
+        unset($TempTrailerColumn);
 
-        print(json_encode($ClientColumns));
+        print(json_encode($TrailerColumns));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-update-client", name="json_update_client")
+     * @Route("/{id}/json-update-trailer", name="json_update_trailer")
      * @Method("PUT")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -124,9 +123,9 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Trailer          = $em->getRepository( 'VeriatransMainBundle:Trailer' )->find( $id );
+        if ( !$Trailer ) {
+            throw $this->createNotFoundException( $translator->trans( 'Trailer not found.', array(), 'MainBundle' ) );
         }
 
         $column = $request->request->get('column');
@@ -136,14 +135,14 @@ class ClientController extends Controller
         if($isDate){
             $value = strtotime($value);
         }
-        $updateResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array($column=>$value),(integer)$id);
+        $updateResult = $em->getRepository( 'VeriatransMainBundle:Trailer' )->updateOneCell(array($column=>$value),(integer)$id);
 
         print(json_encode(array('success'=>$updateResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/{id}/json-delete-client", name="json_delete_client")
+     * @Route("/{id}/json-delete-trailer", name="json_delete_trailer")
      * @Method("DELETE")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -153,18 +152,18 @@ class ClientController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Client          = $em->getRepository( 'VeriatransMainBundle:Client' )->find( $id );
-        if ( !$Client ) {
-            throw $this->createNotFoundException( $translator->trans( 'Client not found.', array(), 'MainBundle' ) );
+        $Trailer          = $em->getRepository( 'VeriatransMainBundle:Trailer' )->find( $id );
+        if ( !$Trailer ) {
+            throw $this->createNotFoundException( $translator->trans( 'Trailer not found.', array(), 'MainBundle' ) );
         }
-        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Client' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
+        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Trailer' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
 
         print(json_encode(array('success'=>$deleteResult,'message'=>'')));
         exit;
     }
 
     /**
-     * @Route("/json-create-client", name="json_create_client")
+     * @Route("/json-create-trailer", name="json_create_trailer")
      * @Method("POST")
      * @Template()
      * @Security("has_role('ROLE_ADMIN')")
@@ -182,7 +181,7 @@ class ClientController extends Controller
             }
         }
 
-        $createResult = $em->getRepository( 'VeriatransMainBundle:Client' )->create($post);
+        $createResult = $em->getRepository( 'VeriatransMainBundle:Trailer' )->create($post);
 
         print(json_encode(array('success'=>(boolean)$createResult, 'id'=>$createResult, 'message'=>'')));
         exit;

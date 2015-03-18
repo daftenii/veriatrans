@@ -9,7 +9,7 @@
                 <div class="box-header">
                     <div class="box-name">
                         <i class="fa fa-table"></i>
-                        <span>{{ 'TruckList'|trans}}</span>
+                        <span>{{ 'DestinationList'|trans}}</span>
                     </div>
                     <div class="box-icons">
                         <a class="a">
@@ -25,35 +25,29 @@
                     <div class="no-move"></div>
                 </div>
                 <div class="box-content">
-                    <table class="table beauty-table table-hover editable" id="truck">
+                    <table class="table beauty-table table-hover editable" id="destination">
                         <thead>
                         <tr>
                             <th>{{ 'Nr'|trans }}</th>
-                            <th>{{ 'RegistrationNumber'|trans }}</th>
-                            <th>{{ 'Model'|trans }}</th>
-                            <th>{{ 'VIN'|trans }}</th>
-                            <th>{{ 'CreatedDate'|trans }}</th>
-                            <th>{{ 'ITPDate'|trans }}</th>
-                            <th>{{ 'LicenceDate'|trans }}</th>
-                            <th>{{ 'RCADate'|trans }}</th>
-                            <th>{{ 'TachographDate'|trans }}</th>
-                            <th>{{ 'CMRDate'|trans }}</th>
+                            <th>{{ 'CountryCode'|trans }}</th>
+                            <th>{{ 'PostalCode'|trans }}</th>
+                            <th>{{ 'City'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
 
                         {#
-                        {% for Key,EachTruck in Trucks %}
+                        {% for Key,EachDestination in Destinations %}
                         <tr>
-                            <td>{{ EachTruck.RegistrationNumber }}</td>
-                            <td><input type="text" value="{{ EachTruck.Model }}"></td>
-                            <td><input type="text" value="{{ EachTruck.VIN }}"></td>
-                            <td><input type="text" value="{{ EachTruck.CreatedDate }}"></td>
-                            <td><input type="text" value="{{ EachTruck.ITPDate }}"></td>
-                            <td><input type="text" value="{{ EachTruck.LicenceDate }}"></td>
-                            <td><input type="text" value="{{ EachTruck.RCADate }}"></td>
-                            <td><input type="text" value="{{ EachTruck.TachographDate }}"></td>
-                            <td><input type="text" value="{{ EachTruck.CMRDate }}"></td>
+                            <td>{{ EachDestination.RegistrationNumber }}</td>
+                            <td><input type="text" value="{{ EachDestination.Model }}"></td>
+                            <td><input type="text" value="{{ EachDestination.VIN }}"></td>
+                            <td><input type="text" value="{{ EachDestination.CreatedDate }}"></td>
+                            <td><input type="text" value="{{ EachDestination.ITPDate }}"></td>
+                            <td><input type="text" value="{{ EachDestination.LicenceDate }}"></td>
+                            <td><input type="text" value="{{ EachDestination.RCADate }}"></td>
+                            <td><input type="text" value="{{ EachDestination.TachographDate }}"></td>
+                            <td><input type="text" value="{{ EachDestination.CMRDate }}"></td>
                         </tr>
                         {% endfor %}
 #}
@@ -68,26 +62,26 @@
 
 {% block javascripts %}
     <script type="text/javascript">
-        UpdatePath                      = '{{ path('json_update_truck',{ 'id': '_id_' }) }}';
-        RetrieveTruckColumnsLengthPath  = '{{ path('json_retrieve_truck_columns_length') }}'
-        DeletePath                     = '{{ path('json_delete_truck',{'id':'_id_'}) }}';
-        CreatePath                     = '{{ path('json_create_truck') }}';
-        RetrieveTruck                   = '{{ path('json_list_trucks') }}';
+        UpdatePath                      = '{{ path('json_update_destination',{ 'id': '_id_' }) }}';
+        RetrieveDestinationColumnsLengthPath = '{{ path('json_retrieve_destination_columns_length') }}'
+        DeletePath                      = '{{ path('json_delete_destination',{'id':'_id_'}) }}';
+        CreatePath                      = '{{ path('json_create_destination') }}';
+        RetrieveDestination                  = '{{ path('json_list_destinations') }}';
         EditDatatable                   = $('i.edit-datatable').parent();
         EditMode                        = $('input[name="InEditMode"]');
-        DataTableID                     = $('#truck');
+        DataTableID                     = $('#destination');
 
         $(function () {
             EditMode.val('');
 
             /*
-            $('table.editable tbody td input').on('click',function(){
-                setEditable('table.editable tbody',true,[0,2]);
-            });
-*/
-            $("#truck").dataTable({
+             $('table.editable tbody td input').on('click',function(){
+             setEditable('table.editable tbody',true,[0,2]);
+             });
+             */
+            DataTableID.dataTable({
                 "bServerSide": true,
-                "sAjaxSource": RetrieveTruck,
+                "sAjaxSource": RetrieveDestination,
                 "bFilter": false,
                 "order": [[ 0, "desc" ]],
                 "language": {
@@ -117,41 +111,11 @@
                 "aoColumns": [{
                     "mData":"id"
                 },{
-                    "mData":"registrationNumber"
+                    "mData":"countryCode"
                 },{
-                    "mData": "model"
+                    "mData":"postalCode"
                 },{
-                    "mData": "vin"
-                },{
-                    "mData": "createdDate",
-                    "mRender": function(data){
-                        return convertTimestamp(data);
-                    }
-                },{
-                    "mData":"itpDate",
-                    "mRender": function(data){
-                     return convertTimestamp(data);
-                     }
-                },{
-                    "mData":"licenceDate",
-                    "mRender": function(data){
-                        return convertTimestamp(data);
-                    }
-                },{
-                    "mData":"rcaDate",
-                    "mRender": function(data){
-                        return convertTimestamp(data);
-                    }
-                },{
-                    "mData":"tachographDate",
-                    "mRender": function(data){
-                        return convertTimestamp(data);
-                    }
-                },{
-                    "mData":"cmrDate",
-                    "mRender": function(data){
-                        return convertTimestamp(data);
-                    }
+                    "mData":"city"
                 }],
                 fnDrawCallback: function(object) {
                     var Table = 'table.editable';
@@ -164,17 +128,11 @@
                     }
 
                     var html = '<tr id="0"  order="'+(TableRows-1)+'" class="'+classHide+'">'+
-                    '<td>&nbsp;<i class="fa fa-save"></i></td>'+
-                    '<td style="position:relative;"><input type="text" value="" class="datatable-default-element-focused" name="1" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="2" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="3" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="4" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="5" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="6" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="7" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="8" style="position:absolute;"></td>'+
-                    '<td style="position:relative;"><input type="text" value="" name="9" style="position:absolute;"></td>'+
-                    '</tr>';
+                            '<td>&nbsp;<i class="fa fa-save"></i></td>'+
+                            '<td style="position:relative;"><input type="text" value="" class="datatable-default-element-focused" name="1" style="position:absolute;"></td>'+
+                            '<td style="position:relative;"><input type="text" value="" name="2" style="position:absolute;"></td>'+
+                            '<td style="position:relative;"><input type="text" value="" name="3" style="position:absolute;"></td>'+
+                            '</tr>';
 
                     $('table.editable tbody').append(html);
                     $('table.editable tbody tr').each(function( index ) {
@@ -186,7 +144,7 @@
 //                    $(TableTbody+' .datatable-default-element-focused').focus();
                     $.ajax({
                         //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
-                        url: RetrieveTruckColumnsLengthPath,
+                        url: RetrieveDestinationColumnsLengthPath,
                         type: 'GET',
                         success: function(data) {
                             $.each(object.aoColumns, function( index, value ) {
@@ -218,17 +176,17 @@
                             $('div.delete',this).on('click',function(){
                                 var id = $(this).parents('tr').attr('id');
                                 if(confirm('{{ 'Confirm delete'|trans}}')){
-                                    var DeleteTruck1 = DeletePath.replace("_id_", id);
+                                    var DeletePath1 = DeletePath.replace("_id_", id);
                                     $.ajax({
                                         //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
-                                        url: DeleteTruck1,
+                                        url: DeletePath1,
                                         type: 'DELETE',
                                         success: function(data) {
                                             if(data.success){
                                                 $('tr[id="'+id+'"]',TableTbody).effect("highlight", {color:'red'}, 700);
                                                 $('tr[id="'+id+'"]',TableTbody).hide( 700, function() {
                                                     $('tr[id="'+id+'"]',TableTbody).remove();
-                                                    $("#truck").dataTable()._fnAjaxUpdate();
+                                                    $("#destination").dataTable()._fnAjaxUpdate();
                                                 });
                                             }
                                         },

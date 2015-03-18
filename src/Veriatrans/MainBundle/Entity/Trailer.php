@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Trailer
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\TrailerRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Trailer
 {
@@ -28,6 +29,12 @@ class Trailer
      */
     private $trailerNumber;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="IsDeleted", type="boolean")
+     */
+    private $isDeleted;
 
     /**
      * Get id
@@ -60,5 +67,26 @@ class Trailer
     public function getTrailerNumber()
     {
         return $this->trailerNumber;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @return boolean
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return integer
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
     }
 }

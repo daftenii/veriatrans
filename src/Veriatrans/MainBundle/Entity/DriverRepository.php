@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: dorin
  * Date: 3/17/15
  * Time: 8:32 PM
+ * @author Aftenii Dorin
  */
 
 namespace Veriatrans\MainBundle\Entity;

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Validator\Constraints\Date;
-use Veriatrans\MainBundle\Entity\ContainerTerminal;
+use Veriatrans\MainBundle\Entity\Container;
 //use Veriatrans\MainBundle\Form\ContainerType;
 /**
  * Class ContainerController
@@ -76,8 +76,8 @@ class ContainerController extends Controller
         $mDataProp_0 = $request->query->get("mDataProp_{$iSortCol_0}");
 
         $em = $this->getDoctrine()->getManager();
-        $Containers = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllContainers = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->findAll();
+        $Containers = $em->getRepository( 'VeriatransMainBundle:Container' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
+        $AllContainers = $em->getRepository( 'VeriatransMainBundle:Container' )->findAll();
 
         $Containers = array(
             'iTotalRecords' => count($AllContainers),
@@ -100,8 +100,8 @@ class ContainerController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
-        $tableName = $em->getClassMetadata('VeriatransMainBundle:ContainerTerminal')->getTableName();
-        $ContainerColumns = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->getColumnsLength($tableName,$databaseName);
+        $tableName = $em->getClassMetadata('VeriatransMainBundle:Container')->getTableName();
+        $ContainerColumns = $em->getRepository( 'VeriatransMainBundle:Container' )->getColumnsLength($tableName,$databaseName);
         $TempContainerColumn = array();
         foreach($ContainerColumns AS $EachColumn){
             $TempContainerColumn[strtolower($EachColumn['Field'])] = preg_replace('/\D/', '', $EachColumn['Type']);
@@ -124,7 +124,7 @@ class ContainerController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Container          = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->find( $id );
+        $Container          = $em->getRepository( 'VeriatransMainBundle:Container' )->find( $id );
         if ( !$Container ) {
             throw $this->createNotFoundException( $translator->trans( 'Container not found.', array(), 'MainBundle' ) );
         }
@@ -136,7 +136,7 @@ class ContainerController extends Controller
         if($isDate){
             $value = strtotime($value);
         }
-        $updateResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->updateOneCell(array($column=>$value),(integer)$id);
+        $updateResult = $em->getRepository( 'VeriatransMainBundle:Container' )->updateOneCell(array($column=>$value),(integer)$id);
 
         print(json_encode(array('success'=>$updateResult,'message'=>'')));
         exit;
@@ -153,11 +153,11 @@ class ContainerController extends Controller
 
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
-        $Container          = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->find( $id );
+        $Container          = $em->getRepository( 'VeriatransMainBundle:Container' )->find( $id );
         if ( !$Container ) {
             throw $this->createNotFoundException( $translator->trans( 'Container not found.', array(), 'MainBundle' ) );
         }
-        $deleteResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
+        $deleteResult = $em->getRepository( 'VeriatransMainBundle:Container' )->updateOneCell(array('isDeleted'=>true),(integer)$id);
 
         print(json_encode(array('success'=>$deleteResult,'message'=>'')));
         exit;
@@ -182,7 +182,7 @@ class ContainerController extends Controller
             }
         }
 
-        $createResult = $em->getRepository( 'VeriatransMainBundle:ContainerTerminal' )->create($post);
+        $createResult = $em->getRepository( 'VeriatransMainBundle:Container' )->create($post);
 
         print(json_encode(array('success'=>(boolean)$createResult, 'id'=>$createResult, 'message'=>'')));
         exit;

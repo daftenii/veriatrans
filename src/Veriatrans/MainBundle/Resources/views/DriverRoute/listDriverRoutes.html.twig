@@ -9,7 +9,7 @@
                 <div class="box-header">
                     <div class="box-name">
                         <i class="fa fa-table"></i>
-                        <span>{{ 'DestinationList'|trans}}</span>
+                        <span>{{ 'DriverList'|trans}}</span>
                     </div>
                     <div class="box-icons">
                         <a class="a">
@@ -25,35 +25,44 @@
                     <div class="no-move"></div>
                 </div>
                 <div class="box-content">
-                    <table class="table beauty-table table-hover editable" id="destination">
+                    <table class="table beauty-table table-hover editable" id="driverRoute">
                         <thead>
                         <tr>
                             <th>{{ 'Nr'|trans }}</th>
-                            <th>{{ 'CountryCode'|trans }}</th>
-                            <th>{{ 'PostalCode'|trans }}</th>
-                            <th>{{ 'City'|trans }}</th>
+                            <th>{{ 'DriverID'|trans }}</th>
+                            <th>{{ 'TruckID'|trans }}</th>
+                            <th>{{ 'CurrentKm'|trans }}</th>
+                            <th>{{ 'PastKm'|trans }}</th>
+                            <th>{{ 'HighwayPaiment'|trans }}</th>
+                            <th>{{ 'ContainerID'|trans }}</th>
+                            <th>{{ 'LoadedWeight'|trans }}</th>
+                            <th>{{ 'Data'|trans }}</th>
+                            <th>{{ 'DestinationID'|trans }}</th>
+                            <th>{{ 'OrderNumber'|trans }}</th>
+                            <th>{{ 'ClientID'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
 
                         {#
-                        {% for Key,EachDestination in Destinations %}
+                        {% for Key,EachDriver in Drivers %}
                         <tr>
-                            <td>{{ EachDestination.RegistrationNumber }}</td>
-                            <td><input type="text" value="{{ EachDestination.Model }}"></td>
-                            <td><input type="text" value="{{ EachDestination.VIN }}"></td>
-                            <td><input type="text" value="{{ EachDestination.CreatedDate }}"></td>
-                            <td><input type="text" value="{{ EachDestination.ITPDate }}"></td>
-                            <td><input type="text" value="{{ EachDestination.LicenceDate }}"></td>
-                            <td><input type="text" value="{{ EachDestination.RCADate }}"></td>
-                            <td><input type="text" value="{{ EachDestination.TachographDate }}"></td>
-                            <td><input type="text" value="{{ EachDestination.CMRDate }}"></td>
+                            <td>{{ EachDriver.RegistrationNumber }}</td>
+                            <td><input type="text" value="{{ EachDriver.Model }}"></td>
+                            <td><input type="text" value="{{ EachDriver.VIN }}"></td>
+                            <td><input type="text" value="{{ EachDriver.CreatedDate }}"></td>
+                            <td><input type="text" value="{{ EachDriver.ITPDate }}"></td>
+                            <td><input type="text" value="{{ EachDriver.LicenceDate }}"></td>
+                            <td><input type="text" value="{{ EachDriver.RCADate }}"></td>
+                            <td><input type="text" value="{{ EachDriver.TachographDate }}"></td>
+                            <td><input type="text" value="{{ EachDriver.CMRDate }}"></td>
                         </tr>
                         {% endfor %}
 #}
                         </tbody>
                     </table>
                     <input type="hidden" value="" name="InEditMode">
+                    <input type="hidden" value="" name="SelectedValue">
                 </div>
             </div>
         </div>
@@ -62,18 +71,23 @@
 
 {% block javascripts %}
     <script type="text/javascript">
-        UpdatePath                      = '{{ path('json_update_destination',{ 'id': '_id_' }) }}';
-        RetrieveDestinationColumnsLengthPath = '{{ path('json_retrieve_destination_columns_length') }}'
-        DeletePath                      = '{{ path('json_delete_destination',{'id':'_id_'}) }}';
-        CreatePath                      = '{{ path('json_create_destination') }}';
-        RetrieveDestination                  = '{{ path('json_list_destinations') }}';
-        EditDatatable                   = $('i.edit-datatable').parent();
-        EditMode                        = $('input[name="InEditMode"]');
-        DataTableID                     = $('#destination');
-        EditModeInput                   = {'position':'absolute','width':'250px'};
-        RetrieveJoinData                = '';
-        JoinParameters                  = {};
-
+        UpdatePath                              = '{{ path('json_update_driver_route',{ 'id': '_id_' }) }}';
+        RetrieveDriverRouteColumnsLengthPath    = '{{ path('json_retrieve_driver_route_columns_length') }}'
+        DeletePath                              = '{{ path('json_delete_driver_route',{'id':'_id_'}) }}';
+        CreatePath                              = '{{ path('json_create_driver_route') }}';
+        RetrieveDriverRoute                     = '{{ path('json_list_driver_routes') }}';
+        EditDatatable                           = $('i.edit-datatable').parent();
+        EditMode                                = $('input[name="InEditMode"]');
+        EditModeInput                           = {'position':'relative','width':'130px'};
+        DataTableID                             = $('#driverRoute');
+        RetrieveJoinData                        = '{{ path('json_retrieve_join_data',{'column':'_column_'}) }}';
+        JoinParameters                          = { 'driverid':{'columns':['FirstName','LastName']},
+                                                    'truckid':{'columns':['RegistrationNumber','Model']},
+                                                    'containerid':{'columns':['Terminal','City','Street']},
+                                                    'destinationid':{'columns':['CountryCode','City']},
+                                                    'clientid':{'columns':['CompanyName']}
+                                                  };
+        ExcludeColumns                          = [0];
         $(function () {
             EditMode.val('');
 
@@ -82,10 +96,11 @@
              setEditable('table.editable tbody',true,[0,2]);
              });
              */
-            DataTableID.dataTable({
+            $("#driverRoute").dataTable({
                 "bServerSide": true,
-                "sAjaxSource": RetrieveDestination,
+                "sAjaxSource": RetrieveDriverRoute,
                 "bFilter": false,
+                "scrollX": true,
                 "order": [[ 0, "desc" ]],
                 "language": {
                     "emptyTable":     "{{ "DatatableEmpty"|trans }}",
@@ -114,11 +129,30 @@
                 "aoColumns": [{
                     "mData":"id"
                 },{
-                    "mData":"countryCode"
+                    "mData":"driverID", "sWidth": EditModeInput.width
                 },{
-                    "mData":"postalCode"
+                    "mData":"truckID", "sWidth": EditModeInput.width
                 },{
-                    "mData":"city"
+                    "mData":"currentKm", "sWidth": EditModeInput.width
+                },{
+                    "mData":"pastKm", "sWidth": EditModeInput.width
+                },{
+                    "mData":"highwayPaiment", "sWidth": EditModeInput.width
+                },{
+                    "mData":"containerID", "sWidth": EditModeInput.width
+                },{
+                    "mData":"loadedWeight", "sWidth": EditModeInput.width
+                },{
+                    "mData":"date", "sWidth": EditModeInput.width,
+                    "mRender": function(data){
+                        return convertTimestamp(data);
+                    }
+                },{
+                    "mData":"destinationID", "sWidth": EditModeInput.width
+                },{
+                    "mData":"orderNumber", "sWidth": EditModeInput.width
+                },{
+                    "mData":"clientID", "sWidth": EditModeInput.width
                 }],
                 fnDrawCallback: function(object) {
                     var Table = 'table.editable';
@@ -129,12 +163,19 @@
                     if(!InEditMode){
                         classHide = 'hide';
                     }
-
-                    var html = '<tr id="0"  order="'+(TableRows-1)+'" class="'+classHide+'">'+
+                    var html = '<tr id="0" order="'+(TableRows-1)+'" class="'+classHide+'">'+
                             '<td>&nbsp;<i class="fa fa-save"></i></td>'+
-                            '<td style="position:relative;"><input type="text" value="" class="datatable-default-element-focused" name="1" style="position:absolute;"></td>'+
-                            '<td style="position:relative;"><input type="text" value="" name="2" style="position:absolute;"></td>'+
-                            '<td style="position:relative;"><input type="text" value="" name="3" style="position:absolute;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
+                            '<td style="position:relative;"></td>'+
                             '</tr>';
 
                     $('table.editable tbody').append(html);
@@ -142,18 +183,18 @@
                         var value = $(this).attr('id');
                         $(this).attr('id',parseInt(value)-1);
                     });
-                    setEditable(TableTbody,[0]);
-                    $(TableTbody+' .datatable-default-element-focused').trigger('click');
+                    setEditable(TableTbody,ExcludeColumns);
 //                    $(TableTbody+' .datatable-default-element-focused').focus();
                     $.ajax({
                         //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
-                        url: RetrieveDestinationColumnsLengthPath,
+                        url: RetrieveDriverRouteColumnsLengthPath,
                         type: 'GET',
                         success: function(data) {
                             $.each(object.aoColumns, function( index, value ) {
                                 var column = value.mData.toLowerCase();
                                 $('thead th:nth-child('+(index+1)+')', Table).attr('data-length',data[column]);
                                 $('thead th:nth-child('+(index+1)+')', Table).attr('data-column-name',column);
+                                createEditCell($(TableTbody),$('tr:last td:nth-child('+(index+1)+')',TableTbody),ExcludeColumns);
                                 $('tr:last td:nth-child('+(index+1)+') input', TableTbody).attr('maxlength',data[column]);
                                 var isDate = column.slice(-4) == 'date';
                                 if(isDate){
@@ -176,7 +217,7 @@
                     }
                 },
                 fnCreatedRow: function( nRow, aData, iDataIndex ) {
-                    $(nRow).attr('id', aData.id+1);
+                    $(nRow).attr('id', parseInt(aData.id)+1);
                     $(nRow).attr('order', iDataIndex);
                 }
             });

@@ -73,6 +73,9 @@
         EditDatatable                   = $('i.edit-datatable').parent();
         EditMode                        = $('input[name="InEditMode"]');
         DataTableID                     = $('#container');
+        EditModeInput                   = {'position':'absolute','width':'150px'};
+        RetrieveJoinData                = '';
+        JoinParameters                  = {};
 
         $(function () {
             EditMode.val('');
@@ -181,39 +184,7 @@
                     });
 
                     if(InEditMode){
-                        $('tr[role="row"]',TableTbody).mouseenter(function(){
-                            $('td:first',this).prepend('<div class="delete" style="position:absolute; cursor:pointer;"><i class="fa fa-times-circle" style="color:red;"></i></div>');
-                            $('div.delete',this).off('click');
-
-                            $('div.delete',this).on('click',function(){
-                                var id = $(this).parents('tr').attr('id');
-                                if(confirm('{{ 'Confirm delete'|trans}}')){
-                                    var DeletePath1 = DeletePath.replace("_id_", id);
-                                    $.ajax({
-                                        //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
-                                        url: DeletePath1,
-                                        type: 'DELETE',
-                                        success: function(data) {
-                                            if(data.success){
-                                                $('tr[id="'+id+'"]',TableTbody).effect("highlight", {color:'red'}, 700);
-                                                $('tr[id="'+id+'"]',TableTbody).hide( 700, function() {
-                                                    $('tr[id="'+id+'"]',TableTbody).remove();
-                                                    $("#container").dataTable()._fnAjaxUpdate();
-                                                });
-                                            }
-                                        },
-                                        error: function (jqXHR, textStatus, errorThrown) {
-                                            alert(errorThrown);
-                                        },
-                                        dataType: "json",
-                                        async: true
-                                    });
-                                }
-                            });
-                        })
-                        $('tr[role="row"]',TableTbody).mouseleave(function(){
-                            $('td div.delete').remove();
-                        })
+                        createDeleteRow(TableTbody);
                     }
                 },
                 fnCreatedRow: function( nRow, aData, iDataIndex ) {

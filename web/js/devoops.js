@@ -3494,6 +3494,9 @@ $(document).ready(function () {
 	})
 });
 
+//***************************************************
+//				START CRUD
+//***************************************************
 function setEditable(id, ExcludeColumns){
     var Table = $(id+' td');
     var TableTbody = $(id);
@@ -3506,6 +3509,7 @@ function setEditable(id, ExcludeColumns){
     var TdIndex = 0;
     var TrIndex = 0;
     var InEditMode = Boolean(EditMode.val());
+	var SelectedValue = '';
 
     for(var i=0; i < TableHeight;i++){
         var TempArray = [];
@@ -3530,21 +3534,35 @@ function setEditable(id, ExcludeColumns){
 
     EditDatatable.on('click',function(){
         if(!InEditMode){
-            EditMode = EditMode.val('1')
+            var LastTr = $('tr:last',TableTbody);
+			EditMode = EditMode.val('1')
             $('i',this).css('color','green').css('text-size','18px;').parents('a').css('background-color','yellow');
-            $('tr:last',TableTbody).removeClass('hide');
+            LastTr.removeClass('hide');
             InEditMode = Boolean(EditMode.val());
-            DataTableID.dataTable()._fnAjaxUpdate();
+
+			$('td',LastTr).each(function( index,value ) {
+				//console.log(index, ExcludeColumns);
+				if($.inArray( index, ExcludeColumns ) == -1){
+					$('tr:last td:nth-child('+(index+1)+') input[type!="hidden"]',TableTbody).focus();
+					$('tr:last td:nth-child('+(index+1)+') select:first', TableTbody).focus();
+					$('tr:last td:nth-child('+(index+1)+')',TableTbody).trigger('click');
+					//console.log($('tr:last td:nth-child('+(index+1)+')', TableTbody));
+					return false;
+				}
+			});
+//			$('tr[role="row"]',TableTbody).mouseenter();
+			createDeleteRow(TableTbody);
         }else{
             EditMode = EditMode.val('');
             $('i',this).attr('style','').parents('a').attr('style','');
             $('tr:last',TableTbody).addClass('hide');
             InEditMode = Boolean(EditMode.val());
+			reset();
         }
     });
 
-    Table.on('click',function(){
-        if(InEditMode){
+	Table.on('click', function(event){
+        if(InEditMode && event.target.nodeName.toLowerCase() != 'select'.toLowerCase() && event.target.nodeName.toLowerCase() != 'option'.toLowerCase()){
             CurrentObject = $(this);
             var ArrayIndex = [];
             ArrayIndex[0] = parseInt(CurrentObject.parents('tr').attr('order'));
@@ -3552,6 +3570,7 @@ function setEditable(id, ExcludeColumns){
 
             TdIndex = ArrayIndex[1];
             TrIndex = ArrayIndex[0];
+			//console.log(TrIndex,TdIndex);
             process(ArrayIndex);
         }
     });
@@ -3618,20 +3637,20 @@ function setEditable(id, ExcludeColumns){
         var isLastRow = InsertRowID == Id;
         var inputsInRow = $('td input',CurrentTr).length;
 
-        var fullInputsInRow = $('input[type="text"]', CurrentTr).filter(function () {
-            var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
-            var isDate = column.slice(-4) == 'date';
-            if(isDate){
-                var val = this.value.replace(/[_-]/g,'')
-                return !!val;
-            }else{
-                return !!this.value;
-            }
-        }).length;
+		var fullInputsInRow = Boolean(!CurrentTr.find("input[type!=hidden]").filter(function() {
+				var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
+				var isDate = column.slice(-4) == 'date';
 
+				if(isDate){
+					var val = this.value.replace(/[_-]/g,'')
+					return val === "";
+				}else{
+					return this.value === "";
+				}
+		}).length);
         var saveButton = $('i.fa-save',CurrentTr);
         saveButton.off('click');
-        if(isLastRow && fullInputsInRow == inputsInRow){
+        if(isLastRow && fullInputsInRow){
             saveButton.css('color','green').css('font-size','20px').css('cursor','pointer');
             saveButton.on('click',function(){
                 insert();
@@ -3643,7 +3662,7 @@ function setEditable(id, ExcludeColumns){
         switch(e.which) {
             case 38: // up
                 if(InEditMode){
-//                    console.log('after:',TrIndex,TdIndex);
+                    //console.log('after:',TrIndex,TdIndex);
                     var PrevIndex = ArrayTable.prev(TrIndex,TdIndex);
                     //console.log('before',PrevIndex);
                     //console.log(ArrayTable,PrevIndex);
@@ -3658,21 +3677,26 @@ function setEditable(id, ExcludeColumns){
                 break;
 */
             case 13:
-                if(isLastRow && fullInputsInRow == inputsInRow){
+                if(isLastRow && fullInputsInRow){
                     insert();
                 }
                 if(InEditMode && !isLastRow){
                     var UpdatePath1 = UpdatePath.replace("_id_", Id);
                     var table = DataTableID.DataTable();
                     var columnName = table.context[0].aoColumns[TdIndex].mData;
+					var Value1 = Value;
+					if(Boolean($('select',Current).length)){
+						Value1 = $('select',Current).val();
+					}
                     $.ajax({
                         //mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
                         url: UpdatePath1,
-                        data: 'column='+columnName+'&value='+Value+'&id='+Id,
+                        data: 'column='+columnName+'&value='+Value1+'&id='+Id,
                         type: 'PUT',
                         success: function(data) {
                             if(data.success){
                                 Current.effect("highlight", {color:'green'}, 700);
+								$('input[type="hidden"]',Current).val($('input[name="SelectedValue"]').val());
                             }else{
                                 Current.effect("highlight", {color:'red'}, 700);
                             }
@@ -3684,15 +3708,16 @@ function setEditable(id, ExcludeColumns){
                         async: false
                     });
                 }
+			case 9: // tab
             case 40: // down
                 if(InEditMode){
-
+					var leftPos = $('#driverRoute_wrapper').scrollLeft();
+					$("#driverRoute_wrapper").animate({scrollLeft: leftPos + 200}, 800);
                     var NextIndex = ArrayTable.next(TrIndex,TdIndex);
                     //console.log('before',NextIndex);
                     TrIndex = NextIndex[0];
                     TdIndex = NextIndex[1];
                     process(NextIndex);
-
                 }
                 break;
 /*
@@ -3706,10 +3731,15 @@ function setEditable(id, ExcludeColumns){
         function insert(){
             var params = {};
             var postParams = {params};
-            $('td input',CurrentTr).each(function( index,value ) {
+
+            $('td input[type!=hidden],td select',CurrentTr).each(function( index,value ) {
                 var td = $(value).parents('td');
                 var column = Current.parents('table').find('thead th:nth-child('+(td.index()+1)+')').data('column-name');
-                var value = $(value).val();
+				var SelectValue= $(value).find(":selected").val();
+				var value = $(value).val();
+				if(typeof SelectValue != "undefined"){
+					value = SelectValue;
+				}
                 postParams['params'][column] = value;
             });
             $.ajax({
@@ -3741,39 +3771,24 @@ function setEditable(id, ExcludeColumns){
         //console.log(ArrayIndex);
         var Current = $(id+' tr[order="'+ArrayIndex[0]+'"] td:nth-child('+(ArrayIndex[1]+1)+')');
 
-        var index = ArrayIndex[1];
+        //var index = ArrayIndex[1];
+		//console.log(index)
         //console.log(ArrayIndex[0]+'=='+TableHeight);
         if((ArrayIndex[0]+1)==TableHeight){
-                $('input',Current).focus();
+            $('input',Current).focus();
+			$('select:first',Current).focus();
         }else{
-            if($.inArray( index, ExcludeColumns ) == -1){
-                if(typeof Current.find('input').val() == 'undefined'){
-                    var text = Current.text();
-                    $(this).css('position','relative');
-                    var maxlength = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('length');
-                    var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
-                    var isDate = column.slice(-4) == 'date';
-                    var dateAttr = '';
-                    if(isDate){
-                        dateAttr = 'placeholder="DD-MM-YYYY" data-mask="date"';
-                    }
-                    Current.html('<input type="text" value="'+text+'" name="'+index+'" maxlength="'+maxlength+'" style="margin:0 auto;width:150px; position:absolute;" '+dateAttr+'>')
-                    $('input',Current).focus();
-
-                    $("[data-mask='date']").mask("99-99-9999");
-                    $('input',Table).on('blur',function(){
-                        reset();
-                    });
-                }
-            }
-        }
+			createEditCell(TableTbody,Current,ExcludeColumns);
+			$('input',Current).focus();
+			$('select:first',Current).focus();
+		}
     }
 
     function reset(){
-        $('table.editable tbody tr[role="row"] input').each(function( index ) {
-            var value = $(this).val();
-            $(this).parents('td').html(value);
-        });
+		$('table.editable tbody tr[role="row"] input').each(function( index ) {
+			var value = $(this).val();
+			$(this).parents('td').html(value);
+		});
     }
 
     /*function refreshDataTable(tableId, urlData)
@@ -3795,6 +3810,108 @@ function setEditable(id, ExcludeColumns){
         });
     }*/
 }
+
+function createEditCell(TableTbody, Current, ExcludeColumns){
+	var index = Current.index();
+	if($.inArray( index, ExcludeColumns ) == -1){
+		if(typeof Current.find('input').val() == 'undefined'){
+			var maxlength = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('length');
+			var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
+			var RetrieveJoinData1 = RetrieveJoinData.replace("_column_", column);
+			var isJoined = column.slice(-2) == 'id';
+			var CurrentText = Current.text();
+			var text = Current.text();
+			$(this).css('position','relative');
+			var isDate = column.slice(-4) == 'date';
+			var dateAttr = '';
+			if(isDate){
+				dateAttr = 'placeholder="DD-MM-YYYY" data-mask="date"';
+			}
+
+			if(isJoined && RetrieveJoinData){
+				$.ajax({
+					//mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
+					url: RetrieveJoinData1,
+					data: JoinParameters[column],
+					type: 'GET',
+					success: function(data) {
+						var select = '<select name="'+index+'" >';
+						$(data).each(function( index, value ) {
+							var name = [];
+							for(var i=0; i < JoinParameters[column].columns.length; i++){
+								name.push(value[JoinParameters[column].columns[i]]);
+							}
+							var selected = '';
+							if(name.join(' ').indexOf(CurrentText) > -1){
+								selected = 'selected="selected"';
+							}
+							select += '<option value="'+value.id+'" '+selected+'>'+name.join(' ')+'</option>';
+						});
+						select += '</select>';
+						select += '<input type="hidden" value="'+CurrentText+'" name="select">';
+						Current.html(select)
+						$('select',Current).on('change',function (){
+								$('input[name="SelectedValue"]').val($('option:selected',this).text());
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						alert(errorThrown);
+					},
+					dataType: "json",
+					async: false
+				});
+			}else{
+				Current.html('<input type="text" value="'+text+'" name="'+index+'" maxlength="'+maxlength+'" style="margin:0 auto;width:'+EditModeInput.width+'; position:'+EditModeInput.position+';" '+dateAttr+'>')
+			}
+
+			$("[data-mask='date']").mask("99-99-9999");
+			$('td input',TableTbody).on('blur',function(){
+				reset();
+			});
+		}
+	}
+
+}
+
+function createDeleteRow(TableTbody){
+	$('tr[role="row"]',TableTbody).mouseenter(function(){
+		$('td:first',this).prepend('<div class="delete" style="position:absolute; cursor:pointer;"><i class="fa fa-times-circle" style="color:red;"></i></div>');
+		$('div.delete',this).off('click');
+
+		$('div.delete',this).on('click',function(){
+			var id = $(this).parents('tr').attr('id');
+			if(confirm(ConfirmDelete)){
+				var DeleteClientRoute1 = DeletePath.replace("_id_", id);
+				$.ajax({
+					//mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
+					url: DeleteClientRoute1,
+					type: 'DELETE',
+					success: function(data) {
+						if(data.success){
+							$('tr[id="'+id+'"]',TableTbody).effect("highlight", {color:'red'}, 700);
+							$('tr[id="'+id+'"]',TableTbody).hide( 700, function() {
+								$('tr[id="'+id+'"]',TableTbody).remove();
+								$("#clientRoute").dataTable()._fnAjaxUpdate();
+							});
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						alert(errorThrown);
+					},
+					dataType: "json",
+					async: true
+				});
+			}
+		});
+	});
+
+	$('tr[role="row"]',TableTbody).mouseleave(function(){
+		$('td div.delete').remove();
+	});
+}
+//***************************************************
+//				END CRUD
+//***************************************************
 
 function convertTimestamp(timestamp) {
     var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds

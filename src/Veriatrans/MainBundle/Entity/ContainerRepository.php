@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class ContainerTerminalRepository extends EntityRepository
+class ContainerRepository extends EntityRepository
 {
     /**
      * @param int $PageNumber
@@ -67,7 +67,7 @@ class ContainerTerminalRepository extends EntityRepository
     }
 
     public function delete($id){
-        $tableName = $this->_em->getClassMetadata('VeriatransMainBundle:ContainerTerminal')->getTableName();
+        $tableName = $this->_em->getClassMetadata('VeriatransMainBundle:Container')->getTableName();
         $connection = $this->_em->getConnection();
         $statement = $connection->prepare("DELETE FROM $tableName WHERE id = :id");
         $statement->bindValue('id', $id);
@@ -76,7 +76,7 @@ class ContainerTerminalRepository extends EntityRepository
     }
 
     public function create(array $fieldsAndValues){
-        $tableName = $this->_em->getClassMetadata('VeriatransMainBundle:ContainerTerminal')->getTableName();
+        $tableName = $this->_em->getClassMetadata('VeriatransMainBundle:Container')->getTableName();
         $connection = $this->_em->getConnection();
         $statement = $connection->insert($tableName,$fieldsAndValues);
         return $connection->lastInsertId();

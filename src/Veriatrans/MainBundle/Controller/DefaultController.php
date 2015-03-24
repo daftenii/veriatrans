@@ -14,6 +14,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        return $this->redirect( $this->generateUrl( 'list_driver_routes' ) );
         return array('currentMenuItem'=>'home');
     }
 }

@@ -27,6 +27,18 @@ City: Orașul
 
 TrailerNumber: Nr. containerului
 
+DriverID: Șoferul
+TruckID: Camionul
+CurrentKm: Km curenți
+PastKm: Km parcurși
+HighwayPaiment: Plăți autostradă
+ContainerID: Container
+LoadedWeight: Masa încărcată
+Data: Data
+DestinationID: Destinația
+OrderNumber: Nr. comenzii
+ClientID: Clinetul
+
 KaiiNumber: Număr KAII
 Terminal: Terminal
 Street: Strada

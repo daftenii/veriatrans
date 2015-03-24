@@ -5,13 +5,13 @@ namespace Veriatrans\MainBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ContainerTerminal
+ * Container
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\ContainerTerminalRepository")
+ * @ORM\Entity(repositoryClass="Veriatrans\MainBundle\Entity\ContainerRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class ContainerTerminal
+class Container
 {
     /**
      * @var integer
@@ -85,7 +85,7 @@ class ContainerTerminal
      * Set kaiiNumber
      *
      * @param string $kaiiNumber
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setKaiiNumber($kaiiNumber)
     {
@@ -108,7 +108,7 @@ class ContainerTerminal
      * Set terminal
      *
      * @param string $terminal
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setTerminal($terminal)
     {
@@ -131,7 +131,7 @@ class ContainerTerminal
      * Set street
      *
      * @param string $street
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setStreet($street)
     {
@@ -154,7 +154,7 @@ class ContainerTerminal
      * Set city
      *
      * @param string $city
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setCity($city)
     {
@@ -177,7 +177,7 @@ class ContainerTerminal
      * Set country
      *
      * @param string $country
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setCountry($country)
     {
@@ -200,7 +200,7 @@ class ContainerTerminal
      * Set postalCode
      *
      * @param string $postalCode
-     * @return ContainerTerminal
+     * @return Container
      */
     public function setPostalCode($postalCode)
     {

@@ -103,9 +103,9 @@ class DriverRouteController extends Controller
         $table = substr($column,0,strlen($column)-2);
         $columns = $request->query->get('columns');
         $results = $em->getRepository( "VeriatransMainBundle:DriverRoute" )->retrieveJoinData($databaseName,$table,$columns);
-        if(!$results){
+        /*if(!$results){
             throw $this->createNotFoundException( $translator->trans( 'Table not found.', array(), 'MainBundle' ) );
-        }
+        }*/
         print(json_encode($results));
         exit;
     }

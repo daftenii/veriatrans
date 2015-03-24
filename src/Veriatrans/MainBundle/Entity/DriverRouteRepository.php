@@ -63,7 +63,7 @@ class DriverRouteRepository extends EntityRepository
         }
 
         $connection = $this->_em->getConnection();
-        $statement = $connection->prepare("SELECT id, ".implode(',',$columns)." FROM ".ucfirst($table)." ORDER BY ".implode(',',$columns)." ASC");
+        $statement = $connection->prepare("SELECT id, ".implode(',',$columns)." FROM ".ucfirst($table)." WHERE IsDeleted = false ORDER BY ".implode(',',$columns)." ASC");
         $statement->execute();
         return $statement->fetchAll();
     }

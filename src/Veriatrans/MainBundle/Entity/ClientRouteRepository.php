@@ -59,17 +59,17 @@ class ClientRouteRepository extends EntityRepository
         return $statement->rowCount();
     }
 
-    public function retrieveJoinData($database, $table, $columns){
+/*    public function retrieveJoinData($database, $table, $columns){
         $isValidJoinColumn          = $this->isValidJoinTable( $database, $table );
         if ( !$isValidJoinColumn ) {
             return false;
         }
 
         $connection = $this->_em->getConnection();
-        $statement = $connection->prepare("SELECT id, ".implode(',',$columns)." FROM ".ucfirst($table)." ORDER BY ".implode(',',$columns)." ASC");
+        $statement = $connection->prepare("SELECT id, ".implode(',',$columns)." FROM ".ucfirst($table)." WHERE IsDeleted = false ORDER BY ".implode(',',$columns)." ASC");
         $statement->execute();
         return $statement->fetchAll();
-    }
+    }*/
 
     /**
      * http://doctrine-orm.readthedocs.org/en/latest/reference/query-builder.html#the-expr-class

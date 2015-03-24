@@ -3637,7 +3637,7 @@ function setEditable(id, ExcludeColumns){
         var isLastRow = InsertRowID == Id;
         var inputsInRow = $('td input',CurrentTr).length;
 
-		var fullInputsInRow = Boolean(!CurrentTr.find("input[type!=hidden]").filter(function() {
+		var fullInputsInRow = Boolean(!CurrentTr.find("input[type!=hidden], select").filter(function() {
 				var column = Current.parents('table').find('thead th:nth-child('+(Current.index()+1)+')').data('column-name');
 				var isDate = column.slice(-4) == 'date';
 

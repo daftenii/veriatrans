@@ -96,7 +96,7 @@ class ClientRouteController extends Controller
      * @Security("has_role('ROLE_ADMIN')")
      * @Template()
      */
-    public function jsonRetrieveJoinDataAction(Request $request,$column){
+/*    public function jsonRetrieveJoinDataAction(Request $request,$column){
         $translator = $this->get( 'translator' );
         $em             = $this->getDoctrine()->getManager();
         $databaseName = $this->container->getParameter( 'database_name' );
@@ -108,7 +108,7 @@ class ClientRouteController extends Controller
         }
         print(json_encode($results));
         exit;
-    }
+    }*/
 
     /**
      *

@@ -255,8 +255,8 @@ a.show-sidebar:hover {
   vertical-align: top;
   border-radius: 2px;
   background:none;
-  color: #45837A;
-  border: 1px solid #45837A;
+  color: #da8383;
+  border: 1px solid #da8383;
 }
 .avatar {
   width: 40px;
@@ -2251,4 +2251,15 @@ border-radius: 50%;}
   #dashboard_links .nav-pills > li.active > a:before {
     display: none;
   }
+}
+
+.nav > li .modal-link.big{
+  height:50px;
+}
+
+#event .not-viewed td{
+  background-color: #ea8383;
+}
+.text-red{
+  color: #ea8383 !important;
 }

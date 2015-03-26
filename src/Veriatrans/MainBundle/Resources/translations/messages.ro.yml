@@ -11,6 +11,7 @@ Confirm delete: Confirmați ștergerea?
 TruckList: Lista camioanelor disponibile
 DriverList: Lista cu parcursul de la șoferi
 ClientList: Lista cu parcursul de la clienți
+EventList: Lista cu evenimente
 
 RegistrationNumber: Nr. de înregistrare
 Model: Model
@@ -69,3 +70,5 @@ DatatablePrvious: Precedentul
 DatatableSortAscending: activează pentru a sorta crescător coloana
 DatatableSortDescending: activează pentru a sorta în descreștere coloana
 
+Description: Descrierea
+ExpireAfter: Expiră peste

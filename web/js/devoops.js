@@ -3730,7 +3730,7 @@ function setEditable(id, ExcludeColumns){
 
         function insert(){
             var params = {};
-            var postParams = {params};
+            var postParams = {'params':params};
 
             $('td input[type!=hidden],td select',CurrentTr).each(function( index,value ) {
                 var td = $(value).parents('td');
@@ -3902,6 +3902,37 @@ function createDeleteRow(TableTbody){
 					async: true
 				});
 			}
+		});
+	});
+
+	$('tr[role="row"]',TableTbody).mouseleave(function(){
+		$('td div.delete').remove();
+	});
+}
+
+function createViewedRow(TableTbody,Location){
+	$('tr.not-viewed',TableTbody).css('cursor','pointer').mouseenter(function(){
+		$('td:first',this).prepend('<div class="delete" style="position:absolute; cursor:pointer;"><i class="fa fa-check" style="color:green;"></i></div>');
+		$(this).off('click');
+
+		$(this).on('click',function(){
+			var id = $(this).attr('id');
+			var ViewedRoute1 = ViewedPath.replace("_id_", id);
+			$.ajax({
+				//mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
+				url: ViewedRoute1,
+				type: 'DELETE',
+				success: function(data) {
+					if(data.success){
+						document.location = Location;
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(errorThrown);
+				},
+				dataType: "json",
+				async: true
+			});
 		});
 	});
 

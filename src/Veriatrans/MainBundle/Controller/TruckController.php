@@ -72,7 +72,7 @@ class TruckController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $Trucks = $em->getRepository( 'VeriatransMainBundle:Truck' )->get($iDisplayStart,$iDisplayLength,$mDataProp_0,$sSortDir_0);
-        $AllTrucks = $em->getRepository( 'VeriatransMainBundle:Truck' )->findAll();
+        $AllTrucks = $em->getRepository( 'VeriatransMainBundle:Truck' )->findBy(array('isDeleted'=>0));
 
         $Trucks = array(
             'iTotalRecords' => count($AllTrucks),
